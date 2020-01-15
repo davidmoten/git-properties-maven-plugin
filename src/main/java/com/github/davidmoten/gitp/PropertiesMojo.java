@@ -14,7 +14,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 /**
- * Goal which touches a timestamp file.
+ * Writes a git properties file to the given output directory containing the
+ * commit hash and the commit timestamp.
  */
 @Mojo(name = "properties", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
 public class PropertiesMojo extends AbstractMojo {
@@ -35,14 +36,22 @@ public class PropertiesMojo extends AbstractMojo {
 
         File file = new File(outputDirectory, filename);
         try {
-            Process p = Runtime.getRuntime().exec("git -rev-parse HEAD");
-            try (InputStream in = p.getInputStream(); //
-                    FileWriter w = new FileWriter(file)) {
-                byte[] bytes = read(in);
-                w.write("git.commit=" + new String(bytes, StandardCharsets.UTF_8));
+            String commitHash = run("git rev-parse HEAD");
+            String commitTime = run("git show -s --format=%ci HEAD");
+            try (FileWriter w = new FileWriter(file)) {
+                w.write("git.commit.hash=" + commitHash.trim() + "\n");
+                w.write("git.commit.timestamp=" + commitTime.trim());
             }
         } catch (IOException e) {
             throw new MojoExecutionException(e.getMessage(), e);
+        }
+    }
+
+    private static String run(String command) throws IOException {
+        Process p = Runtime.getRuntime().exec(command);
+        try (InputStream in = p.getInputStream()) {
+            byte[] bytes = read(in);
+            return new String(bytes, StandardCharsets.UTF_8);
         }
     }
 
