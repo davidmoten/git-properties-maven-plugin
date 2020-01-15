@@ -32,6 +32,7 @@ public class PropertiesMojo extends AbstractMojo {
     @Parameter(defaultValue = "git.properties", property = "filename", required = true)
     private String filename;
 
+    @Override
     public void execute() throws MojoExecutionException {
         Log log = getLog();
         if (!outputDirectory.exists()) {
