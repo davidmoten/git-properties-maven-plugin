@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -53,15 +54,24 @@ public class PropertiesMojo extends AbstractMojo {
         }
     }
 
-    private static String run(String... command) throws IOException, InterruptedException {
+    private String run(String... command) throws IOException, InterruptedException {
         Process p = new ProcessBuilder() //
                 .command(Arrays.asList(command)) //
                 .redirectErrorStream(true) //
                 .start();
         p.waitFor(10, TimeUnit.SECONDS);
+        final String message;
         try (InputStream in = p.getInputStream()) {
             byte[] bytes = read(in);
-            return new String(bytes, StandardCharsets.UTF_8);
+            message = new String(bytes, StandardCharsets.UTF_8);
+        }
+        if (p.exitValue() != 0) {
+            String cmd = Arrays.stream(command).collect(Collectors.joining(" "));
+            getLog().error("An error occurred calling\n" + cmd + ". The output of the command is:\n"
+                    + message);
+            throw new RuntimeException("An error occurred calling '" + cmd + "'. See log for details.");
+        } else {
+            return message;
         }
     }
 
