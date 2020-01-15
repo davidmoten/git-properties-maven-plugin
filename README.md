@@ -24,9 +24,31 @@ Add this fragment to the build/plugins section in your pom.xml:
     </executions>
 </plugin>
 ```
-The above fragment will add a `git.properties` file to the generated artifact classpath when you run `mvn clean install`. The file looks like this:
+The above fragment will add a `git.properties` file to the generated artifact classpath (`${project.build.outputDirectory}`) when you run `mvn clean install`. The file looks like this:
 
 ```
 git.commit.hash=02a8e7e8f1102715e90f8f6b4c037641d04ee3c8
 git.commit.timestamp=2020-01-15 17:08:22 +1100
+```
+
+You can override the default location and filename like this:
+
+```xml
+<plugin>
+    <groupId>com.github.davidmoten</groupId>
+    <artifactId>git-properties-maven-plugin</artifactId>
+    <version>VERSION_HERE</version>
+    <executions>
+        <execution>
+            <id>write-properties</id>
+            <goals>
+                <goal>properties</goal>
+            </goals>
+        </execution>
+    </executions>
+    <configuration>
+        <outputDirectory>${project.build.outputDirectory}/git</outputDirectory>
+        <filename>commit.properties</filename>
+    </configuration>
+</plugin>
 ```
