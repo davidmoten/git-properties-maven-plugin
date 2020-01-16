@@ -8,7 +8,7 @@ A maven plugin that
 * relies on the existence of the git binary on the current path
 * sets properties that can be used in the pom.xml (e.g. in <finalName>) but only if the plugin is bound to the **initialize** phase (which is the default)
 
-**Status: ** *deployed to Maven Central*
+**Status:** *deployed to Maven Central*
 ## Usage
 
 Add this fragment to the build/plugins section in your pom.xml:
