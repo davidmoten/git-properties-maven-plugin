@@ -7,12 +7,11 @@
         <version>0.1</version>
     </parent>
     <artifactId>git-properties-maven-plugin</artifactId>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>${project.artifactId}</name>
 
-    <!-- FIXME change it to the project's website -->
     <url>https://github.com/davidmoten/git-properties-maven-plugin</url>
 
     <prerequisites>
@@ -20,11 +19,18 @@
     </prerequisites>
 
     <properties>
+        <scm.url>scm:git:https://github.com/davidmoten/logan.git</scm.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <maven.version>3.3.9</maven.version>
     </properties>
+    <scm>
+        <connection>${scm.url}</connection>
+        <developerConnection>${scm.url}</developerConnection>
+        <url>${scm.url}</url>
+        <tag>HEAD</tag>
+    </scm>
 
     <dependencies>
         <dependency>
