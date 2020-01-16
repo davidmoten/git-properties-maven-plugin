@@ -41,6 +41,9 @@ git.commit.timestamp.iso8601.format=yyyy-MM-dd'T'HH:mm:ssX
 git.commit.timestamp.epoch.ms=1579212371000
 
 ```
+
+If you are generating a jar or war artifact then the file will a resource at the root of the classpath (`/git.properties`). 
+
 The same properties are set for use in the pom.xml also so you can use `${git.commit.hash.short}` for instance anywhere in the pom.xml.
 
 ### Overriding defaults
