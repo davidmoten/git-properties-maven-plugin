@@ -19,7 +19,7 @@ Add this fragment to the build/plugins section in your pom.xml:
     <version>VERSION_HERE</version>
     <executions>
         <execution>
-            <id>write-properties</id>
+            <id>properties</id>
             <goals>
                 <goal>properties</goal>
             </goals>
