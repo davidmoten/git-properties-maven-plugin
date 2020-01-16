@@ -30,6 +30,8 @@ import org.apache.maven.project.MavenProject;
  */
 @Mojo(name = "properties", defaultPhase = LifecyclePhase.INITIALIZE)
 public class PropertiesMojo extends AbstractMojo {
+    
+    private static final String ISO_8601 = "yyyy-MM-dd'T'HH:mm:ssX";
     /**
      * Location of the file.
      */
@@ -44,7 +46,7 @@ public class PropertiesMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "UTC", property = "timestampFormatTimeZone", required = true)
     private String timestampFormatTimeZone;
-
+    
     @Parameter(defaultValue = "${project}")
     private MavenProject project;
 
@@ -58,6 +60,9 @@ public class PropertiesMojo extends AbstractMojo {
         SimpleDateFormat sdf = new SimpleDateFormat(timestampFormat);
         sdf.setTimeZone(TimeZone.getTimeZone(timestampFormatTimeZone));
 
+        SimpleDateFormat sdf2 = new SimpleDateFormat(ISO_8601);
+        sdf2.setTimeZone(TimeZone.getTimeZone(timestampFormatTimeZone));
+        
         File file = new File(outputDirectory, filename);
         try {
             String commitHash = run("git", "rev-parse", "HEAD");
@@ -68,6 +73,11 @@ public class PropertiesMojo extends AbstractMojo {
             map.put("git.commit.hash", commitHash.trim());
             map.put("git.commit.hash.short", commitHashShort.trim());
             map.put("git.commit.timestamp", sdf.format(commitTime));
+            map.put("git.commit.timestamp.format", timestampFormat);
+            map.put("git.commit.timestamp.format.timezone", timestampFormatTimeZone);
+            map.put("git.commit.timestamp.iso8601", sdf2.format(commitTime));
+            map.put("git.commit.timestamp.iso8601.format", ISO_8601);
+            map.put("git.commit.timestamp.epoch.ms", String.valueOf(commitTime));
             try (FileWriter w = new FileWriter(file)) {
                 for (Entry<String, String> entry : map.entrySet()) {
                     String line = entry.getKey() + "=" + entry.getValue() + "\n";
