@@ -35,6 +35,8 @@ git.commit.hash=02a8e7e8f1102715e90f8f6b4c037641d04ee3c8
 git.commit.hash.short=02a8e7e
 git.commit.timestamp=2020-01-15 17:08:22 +1100
 ```
+The same properties are set for use in the pom.xml also so you can use `${git.commit.hash.short}` for instance anywhere in the pom.xml.
+
 ### Overriding defaults
 You can override the default location and filename like this:
 
@@ -58,7 +60,7 @@ You can override the default location and filename like this:
 </plugin>
 ```
 ### Using properties set by git-properties-maven-plugin
-Because the plugin is bound by default to the **initialize** phase the properties it sets (with the same key names and values as in the `git.properties` file) are available for use in the pom.xml. For example you can set the finalName to use the short git commit has as well:
+Because the plugin is bound by default to the **initialize** phase the properties it sets (with the same key names and values as in the `git.properties` file) are available for use in the pom.xml. For example you can set the <finalName> to use the short git commit has as well:
 
 ```xml
 <finalName>${project-artifactId}-${project.version}-${git.commit.hash.short}</finalName>
