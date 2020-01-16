@@ -6,10 +6,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -36,6 +39,12 @@ public class PropertiesMojo extends AbstractMojo {
     @Parameter(defaultValue = "git.properties", property = "filename", required = true)
     private String filename;
 
+    @Parameter(defaultValue = "yyyyMMddHHmmss", property = "timestampFormat", required = true)
+    private String timestampFormat;
+
+    @Parameter(defaultValue = "UTC", property = "timestampFormatTimeZone", required = true)
+    private String timestampFormatTimeZone;
+
     @Parameter(defaultValue = "${project}")
     private MavenProject project;
 
@@ -46,15 +55,19 @@ public class PropertiesMojo extends AbstractMojo {
             outputDirectory.mkdirs();
         }
 
+        SimpleDateFormat sdf = new SimpleDateFormat(timestampFormat);
+        sdf.setTimeZone(TimeZone.getTimeZone(timestampFormatTimeZone));
+
         File file = new File(outputDirectory, filename);
         try {
             String commitHash = run("git", "rev-parse", "HEAD");
             String commitHashShort = run("git", "rev-parse", "--short", "HEAD");
-            String commitTime = run("git", "show", "-s", "--format=%ci", "HEAD");
+            long commitTime = Long.parseLong(run("git", "show", "-s", "--format=%ct", "HEAD").trim()) * 1000;
+            log.info(new Date(commitTime).toString());
             Map<String, String> map = new LinkedHashMap<>();
             map.put("git.commit.hash", commitHash.trim());
             map.put("git.commit.hash.short", commitHashShort.trim());
-            map.put("git.commit.timestamp", commitTime.trim());
+            map.put("git.commit.timestamp", sdf.format(commitTime));
             try (FileWriter w = new FileWriter(file)) {
                 for (Entry<String, String> entry : map.entrySet()) {
                     String line = entry.getKey() + "=" + entry.getValue() + "\n";
