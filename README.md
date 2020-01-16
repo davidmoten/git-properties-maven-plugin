@@ -5,8 +5,8 @@
 
 A maven plugin that 
 * writes a file to the artifact classpath (by default) containing the current git commit hash (long and short) and the timestamp of that commit 
-* relies on the existence of the git binary on the current path
 * sets properties that can be used in the pom.xml (e.g. in <finalName>) but only if the plugin is bound to the **initialize** phase (which is the default)
+* relies on the existence of the git binary on the current path
 
 **Status:** *deployed to Maven Central*
 ## Usage
