@@ -49,9 +49,11 @@ public class PropertiesMojo extends AbstractMojo {
         File file = new File(outputDirectory, filename);
         try {
             String commitHash = run("git", "rev-parse", "HEAD");
+            String commitHashShort = run("git", "rev-parse", "--short", "HEAD");
             String commitTime = run("git", "show", "-s", "--format=%ci", "HEAD");
             Map<String, String> map = new LinkedHashMap<>();
             map.put("git.commit.hash", commitHash.trim());
+            map.put("git.commit.hash.short", commitHashShort.trim());
             map.put("git.commit.timestamp", commitTime.trim());
             try (FileWriter w = new FileWriter(file)) {
                 for (Entry<String, String> entry : map.entrySet()) {
