@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -16,12 +19,13 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.MavenProject;
 
 /**
  * Writes a git properties file to the given output directory containing the
  * commit hash and the commit timestamp.
  */
-@Mojo(name = "properties", defaultPhase = LifecyclePhase.PROCESS_SOURCES)
+@Mojo(name = "properties", defaultPhase = LifecyclePhase.INITIALIZE)
 public class PropertiesMojo extends AbstractMojo {
     /**
      * Location of the file.
@@ -31,6 +35,9 @@ public class PropertiesMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "git.properties", property = "filename", required = true)
     private String filename;
+
+    @Parameter(defaultValue = "${project}")
+    private MavenProject project;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -43,13 +50,19 @@ public class PropertiesMojo extends AbstractMojo {
         try {
             String commitHash = run("git", "rev-parse", "HEAD");
             String commitTime = run("git", "show", "-s", "--format=%ci", "HEAD");
+            Map<String, String> map = new LinkedHashMap<>();
+            map.put("git.commit.hash", commitHash.trim());
+            map.put("git.commit.timestamp", commitTime.trim());
             try (FileWriter w = new FileWriter(file)) {
-                w.write("git.commit.hash=" + commitHash.trim() + "\n");
-                w.write("git.commit.timestamp=" + commitTime.trim());
+                for (Entry<String, String> entry : map.entrySet()) {
+                    String line = entry.getKey() + "=" + entry.getValue() + "\n";
+                    w.write(line);
+                    log.info(line);
+                    project.getProperties().put(entry.getKey(), entry.getValue());
+                }
             }
-            log.info("git.commit.hash=" + commitHash);
-            log.info("git.commit.timestamp=" + commitTime);
             log.info("git properties written to " + file);
+            log.info("maven project properties also set with above key-values");
         } catch (IOException | InterruptedException e) {
             throw new MojoExecutionException(e.getMessage(), e);
         }
@@ -68,8 +81,7 @@ public class PropertiesMojo extends AbstractMojo {
         }
         if (p.exitValue() != 0) {
             String cmd = Arrays.stream(command).collect(Collectors.joining(" "));
-            getLog().error("An error occurred calling\n" + cmd + ". The output of the command is:\n"
-                    + message);
+            getLog().error("An error occurred calling\n" + cmd + ". The output of the command is:\n" + message);
             throw new RuntimeException("An error occurred calling '" + cmd + "'. See log for details.");
         } else {
             return message;

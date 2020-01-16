@@ -39,7 +39,7 @@ public class PropertiesTest {
 
         File file = new File(outputDirectory, filename);
         assertTrue(file.exists());
-
+        
     }
 
     /** Do not need the MojoRule. */
