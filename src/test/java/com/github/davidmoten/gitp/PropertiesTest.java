@@ -6,7 +6,11 @@ import org.apache.maven.plugin.testing.WithoutMojo;
 import org.junit.Rule;
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import com.google.common.io.Files;
+
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 public class PropertiesTest {
     @Rule
@@ -39,6 +43,11 @@ public class PropertiesTest {
 
         File file = new File(outputDirectory, filename);
         assertTrue(file.exists());
+        
+        System.out.println("git.properties:");
+        System.out.println("------------------");
+        Files.readLines(file, StandardCharsets.UTF_8).stream().forEach(System.out::println);
+        System.out.println("------------------");
         
     }
 

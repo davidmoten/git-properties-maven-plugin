@@ -65,13 +65,13 @@ public class PropertiesMojo extends AbstractMojo {
         
         File file = new File(outputDirectory, filename);
         try {
-            String commitHash = run("git", "rev-parse", "HEAD");
-            String commitHashShort = run("git", "rev-parse", "--short", "HEAD");
+            String commitHash = run("git", "rev-parse", "HEAD").trim();
+            String commitHashShort = run("git", "rev-parse", "--short", "HEAD").trim();
             long commitTime = Long.parseLong(run("git", "show", "-s", "--format=%ct", "HEAD").trim()) * 1000;
             log.info(new Date(commitTime).toString());
             Map<String, String> map = new LinkedHashMap<>();
-            map.put("git.commit.hash", commitHash.trim());
-            map.put("git.commit.hash.short", commitHashShort.trim());
+            map.put("git.commit.hash", commitHash);
+            map.put("git.commit.hash.short", commitHashShort);
             map.put("git.commit.timestamp", sdf.format(commitTime));
             map.put("git.commit.timestamp.format", timestampFormat);
             map.put("git.commit.timestamp.format.timezone", timestampFormatTimeZone);
@@ -80,8 +80,8 @@ public class PropertiesMojo extends AbstractMojo {
             map.put("git.commit.timestamp.epoch.ms", String.valueOf(commitTime));
             try (FileWriter w = new FileWriter(file)) {
                 for (Entry<String, String> entry : map.entrySet()) {
-                    String line = entry.getKey() + "=" + entry.getValue() + "\n";
-                    w.write(line);
+                    String line = entry.getKey() + "=" + entry.getValue();
+                    w.write(line + "\n");
                     log.info(line);
                     project.getProperties().put(entry.getKey(), entry.getValue());
                 }
