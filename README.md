@@ -1,5 +1,5 @@
 # git-properties-maven-plugin
-<a href="https://travis-ci.org/davidmoten/git-properties-maven-plugin"><img src="https://travis-ci.org/davidmoten/git-properties-maven-plugin.svg"/></a><br/>
+<a href="https://github.com/davidmoten/git-properties-maven-plugin/actions/workflows/ci.yml"><img src="https://github.com/davidmoten/git-properties-maven-plugin/actions/workflows/ci.yml/badge.svg"/></a><br/>
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/git-properties-maven-plugin/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/com.github.davidmoten/git-properties-maven-plugin)<br/>
 [![codecov](https://codecov.io/gh/davidmoten/git-properties-maven-plugin/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmoten/git-properties-maven-plugin)<br/>
 
