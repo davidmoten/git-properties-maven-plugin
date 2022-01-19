@@ -7,7 +7,7 @@
         <version>0.1</version>
     </parent>
     <artifactId>git-properties-maven-plugin</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
     <packaging>maven-plugin</packaging>
 
     <name>${project.artifactId}</name>
@@ -29,7 +29,7 @@
         <connection>${scm.url}</connection>
         <developerConnection>${scm.url}</developerConnection>
         <url>${scm.url}</url>
-        <tag>0.1</tag>
+        <tag>0.2</tag>
     </scm>
 
     <dependencies>
